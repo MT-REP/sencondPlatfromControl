@@ -27,15 +27,28 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     motustimer.cpp \
-    motussocket.cpp
+    motussocket.cpp \
+    motusplatfromsockt.cpp \
+    motussinglestep.cpp \
+    motussine.cpp \
+    motusfilerun.cpp \
+    motusqwtplot.cpp
 
 HEADERS += \
         mainwindow.h \
     motustimer.h \
-    motussocket.h
+    motussocket.h \
+    motusplatfromsockt.h \
+    motussinglestep.h \
+    motussine.h \
+    motusfilerun.h \
+    motusqwtplot.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    motussinglestep.ui \
+    motussine.ui \
+    motusfilerun.ui
 
 RC_FILE = motus.rc
 
@@ -43,15 +56,19 @@ MOC_DIR=temp/moc
 RCC_DIR=temp/rcc
 UI_DIR=temp/ui
 OBJECTS_DIR=temp/obj
-DESTDIR=bin
 
 if:debug {
      DESTDIR=./debug
      LIBS += -L./debug
+     LIBS += -L"C:\Qt\Qt5.9.3\5.9.3\mingw53_32\lib" -lqwtd   #qwt文件配置
 } else:release {
      DESTDIR=./release
      LIBS += -L./release
+     LIBS += -L"C:\Qt\Qt5.9.3\5.9.3\mingw53_32\lib" -lqwt     #qwt文件配置
+
 }
-
 LIBS += -lwinmm
-
+#QWT 文件配置
+DEFINES += QT_DLL QWT_DLL
+INCLUDEPATH += C:\Qt\Qt5.9.3\5.9.3\mingw53_32\include\Qwt
+###################################################################

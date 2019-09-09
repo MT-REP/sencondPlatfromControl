@@ -23,7 +23,7 @@ void MotusSocket::initSocket(int bindPort)
       else
       {
           QMessageBox box;
-          box.setText("连接播放器的IP出现\r\n网络错误");
+          box.setText("绑定的端口号被占用。");
           box.exec();
       }
 }
@@ -51,6 +51,7 @@ void MotusSocket::readPendingDatagrams()
          QByteArray data;
          data.resize(motusUdpServer->pendingDatagramSize());
          motusUdpServer->readDatagram(data.data(),data.size());//读取数据
+         emit sendRecvData(data.data(),data.size());
      }
 }
 

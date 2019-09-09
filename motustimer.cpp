@@ -32,7 +32,6 @@ void MotusTimer::start()
 {
     m_id = timeSetEvent(m_timer, 1, mmtimer_proc, (DWORD_PTR)this,
         TIME_CALLBACK_FUNCTION | TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
-
 }
 
 //关闭定时器

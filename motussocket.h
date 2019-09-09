@@ -20,7 +20,7 @@ private:
     bool isInit;//是否初始化完成
     void closeSocket();//关闭Socket
 signals:
-
+    void sendRecvData(char *data,int length);
 public slots:
     void readPendingDatagrams();
 };
