@@ -16,7 +16,7 @@ MotusPlatfromSockt::MotusPlatfromSockt(QObject *parent) : QObject(parent)
 void MotusPlatfromSockt::initPara()
 {
     mMotusSocket.initSocket(10000);
-    mMotusSocket.setRemoteIpAndPort("192.168.0.125",5000);
+    mMotusSocket.setRemoteIpAndPort("192.168.0.125",10001);
     connect(&mMotusSocket,SIGNAL(sendRecvData(char*,int)),this,SLOT(recvData(char *,int)));
 }
 

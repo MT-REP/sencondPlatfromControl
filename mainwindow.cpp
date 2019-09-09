@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMotusSine =new MotusSine(this);
     //单步运动对象
     mMotusSingleStep =new MotusSingleStep(this);
+    //数据保存
+    mMotusSaveData =new MotusSaveData(this);
     //删除标签页
     ui->functionTabWidget->removeTab(0);
     ui->functionTabWidget->removeTab(0);
@@ -41,6 +43,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMotusFileRun,SIGNAL(sendMovieData(QList<M_MovieData>&,float *)),this,SLOT(recvMovieData(QList<M_MovieData>&,float *)));
     connect(this,SIGNAL(sendMovieCount(unsigned int)),mMotusFileRun,SLOT(recvMovieCount(unsigned int)));
     connect(this,SIGNAL(setFileRunButton(bool)),mMotusFileRun,SLOT(recvFileRunButton(bool)));
+
+    ui->functionTabWidget->insertTab(3,mMotusSaveData,"数据保存");
+    connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));
+    connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
+    connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
+
+
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
     mMotusAngleQwtplot.setXMinMAX(-35,35,10);
     QString name[3]={"纵倾","横摇","航向"};
@@ -88,6 +97,20 @@ void MainWindow::masterClock(void)
         {
             sendStruct.DOFs[i]=0.f;
         }
+    }
+    //数据保存
+    if(mMDataSave.isopen&&platStatus!=R_STATUS_Disconnect)
+    {
+        MDataArr tMDataArr;
+        for(int i=0;i<6;i++)
+        {
+            if(mMDataSave.isSave[i])
+            {
+                tMDataArr.data[2*i]=sendStruct.DOFs[i];
+                tMDataArr.data[2*i+1]=sendStruct.DOFs[i];
+            }
+        }
+        mMDataSave.dataList.push_back(tMDataArr);
     }
     mMotusPlatfromSockt.sendHostData(sendStruct);
 }
@@ -541,8 +564,22 @@ void MainWindow::clearSinData()
     emit sendSinInterrupt();
 }
 
+//接收数据是否保存
+void MainWindow::recvDataIsSave(bool *iswitch,bool isave)
+{
+   for(int i=0;i<6;i++)
+   {
+       mMDataSave.isSave[i]=iswitch[i];
+   }
+   mMDataSave.isopen=isave;
+}
 
-
+//数据保存执行
+void MainWindow::recvCarryOut()
+{
+    mMDataSave.isopen=false;
+    emit sendDataCarryOut(mMDataSave);
+}
 
 
 

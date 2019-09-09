@@ -8,6 +8,7 @@
 #include "motussine.h"
 #include "motussinglestep.h"
 #include "motusqwtplot.h"
+#include "motussavedata.h"
 //平台工作状态指令
 enum M_nCmd
 {
@@ -149,6 +150,8 @@ private:
     MotusFileRun *mMotusFileRun;       //文件运动对象
     MotusSine *mMotusSine;             //正弦运动对象
     MotusSingleStep *mMotusSingleStep; //单步运动对象
+    MotusSaveData *mMotusSaveData;     //数据保存对象
+    MDataSave mMDataSave;              //数据保存结构体
     MotusDataToPlatfrom sendStruct;    //发送结构体对象
     MotusDataToHost recvStrcut;        //接收结构体对象
     MotusFileData mMotusFileData;      //数据动作结构体
@@ -174,6 +177,7 @@ private:
     void clearMovieData(void);
     //清除单步数据
     void clearSingleStepData();
+    //按键设置可用
     void keySetEnable();
 signals:
     void sendSingleStepButton(bool valid);
@@ -181,12 +185,15 @@ signals:
     void setFileRunButton(bool valid);
     void sendTimeView(float timeView);
     void sendSinInterrupt(void);
+    void sendDataCarryOut(MDataSave &);
 public slots:
     void masterClock(void);           //主时钟
     void recvMovieData(QList<M_MovieData>&movieData,float *data);
     void recvSingleStepData(float *pos,float *speed);
     void recvSinData(int totaltime,float *value,float *fre, float *phase);
     void recvSinStop();
+    void recvDataIsSave(bool *iswitch,bool isave);
+    void recvCarryOut();
 private slots:
     void on_startStopButton_clicked();
     void on_searchBottomButton_clicked();

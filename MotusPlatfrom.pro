@@ -32,7 +32,8 @@ SOURCES += \
     motussinglestep.cpp \
     motussine.cpp \
     motusfilerun.cpp \
-    motusqwtplot.cpp
+    motusqwtplot.cpp \
+    motussavedata.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,13 +43,15 @@ HEADERS += \
     motussinglestep.h \
     motussine.h \
     motusfilerun.h \
-    motusqwtplot.h
+    motusqwtplot.h \
+    motussavedata.h
 
 FORMS += \
         mainwindow.ui \
     motussinglestep.ui \
     motussine.ui \
-    motusfilerun.ui
+    motusfilerun.ui \
+    motussavedata.ui
 
 RC_FILE = motus.rc
 
@@ -57,11 +60,13 @@ RCC_DIR=temp/rcc
 UI_DIR=temp/ui
 OBJECTS_DIR=temp/obj
 
-if:debug {
+CONFIG(debug,debug|release) {
      DESTDIR=./debug
      LIBS += -L./debug
      LIBS += -L"C:\Qt\Qt5.9.3\5.9.3\mingw53_32\lib" -lqwtd   #qwt文件配置
-} else:release {
+}
+else
+{
      DESTDIR=./release
      LIBS += -L./release
      LIBS += -L"C:\Qt\Qt5.9.3\5.9.3\mingw53_32\lib" -lqwt     #qwt文件配置
