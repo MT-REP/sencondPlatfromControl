@@ -1,3 +1,6 @@
 /temp/
 /release/
 /debug/
+Makefile.*
+Makefile
+MotusPlatfrom.pro.user
