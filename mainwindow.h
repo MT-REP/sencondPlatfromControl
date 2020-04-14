@@ -9,6 +9,7 @@
 #include "motussinglestep.h"
 #include "motusqwtplot.h"
 #include "motussavedata.h"
+#include "motuscylinder.h"
 //平台工作状态指令
 enum M_nCmd
 {
@@ -152,6 +153,7 @@ private:
     MotusSingleStep *mMotusSingleStep; //单步运动对象
     MotusSaveData *mMotusSaveData;     //数据保存对象
     MDataSave mMDataSave;              //数据保存结构体
+    MotusCylinder *mMotusCylinder;     //单缸运动对象
     MotusDataToPlatfrom sendStruct;    //发送结构体对象
     MotusDataToHost recvStrcut;        //接收结构体对象
     MotusFileData mMotusFileData;      //数据动作结构体
@@ -194,6 +196,9 @@ public slots:
     void recvSinStop();
     void recvDataIsSave(bool *iswitch,bool isave);
     void recvCarryOut();
+    void recvHandCmd(int cmd);
+    void recvHandMerve(unsigned char merve);
+    void recvHandValue(float data);
 private slots:
     void on_startStopButton_clicked();
     void on_searchBottomButton_clicked();

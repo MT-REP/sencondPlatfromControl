@@ -33,7 +33,9 @@ SOURCES += \
     motussine.cpp \
     motusfilerun.cpp \
     motusqwtplot.cpp \
-    motussavedata.cpp
+    motussavedata.cpp \
+    motuscylinder.cpp \
+    motusinsidecmd.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,14 +46,18 @@ HEADERS += \
     motussine.h \
     motusfilerun.h \
     motusqwtplot.h \
-    motussavedata.h
+    motussavedata.h \
+    motuscylinder.h \
+    motusinsidecmd.h
 
 FORMS += \
         mainwindow.ui \
     motussinglestep.ui \
     motussine.ui \
     motusfilerun.ui \
-    motussavedata.ui
+    motussavedata.ui \
+    motuscylinder.ui \
+    motusinsidecmd.ui
 
 RC_FILE = motus.rc
 

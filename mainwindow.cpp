@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMotusSingleStep =new MotusSingleStep(this);
     //数据保存
     mMotusSaveData =new MotusSaveData(this);
+    //单缸运动
+    mMotusCylinder =new MotusCylinder(this);//单缸运动对象
     //删除标签页
     ui->functionTabWidget->removeTab(0);
     ui->functionTabWidget->removeTab(0);
@@ -48,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));
     connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
     connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
+
+    ui->functionTabWidget->insertTab(4,mMotusCylinder,"单缸运动");
+    connect(mMotusCylinder,SIGNAL(recvHandCmd(int)),this,SLOT(recvHandCmd(int)));
+    connect(mMotusCylinder,SIGNAL(recvHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
+    connect(mMotusCylinder,SIGNAL(recvHandValue(float)),this,SLOT(recvHandValue(float)));
 
 
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
@@ -581,8 +588,23 @@ void MainWindow::recvCarryOut()
     emit sendDataCarryOut(mMDataSave);
 }
 
+//
+void MainWindow::recvHandCmd(int cmd)
+{
 
+}
 
+//
+void MainWindow::recvHandMerve(unsigned char merve)
+{
+
+}
+
+//
+void MainWindow::recvHandValue(float data)
+{
+
+}
 
 
 

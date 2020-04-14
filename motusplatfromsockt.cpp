@@ -16,10 +16,9 @@ MotusPlatfromSockt::MotusPlatfromSockt(QObject *parent) : QObject(parent)
 void MotusPlatfromSockt::initPara()
 {
     mMotusSocket.initSocket(10000);
-    mMotusSocket.setRemoteIpAndPort("192.168.0.125",10001);
+    mMotusSocket.setRemoteIpAndPort("192.168.0.125",5000);
     connect(&mMotusSocket,SIGNAL(sendRecvData(char*,int)),this,SLOT(recvData(char *,int)));
 }
-
 
 //接受数据
 void MotusPlatfromSockt::recvData(char *data,int length)
@@ -86,7 +85,6 @@ void MotusPlatfromSockt::sendHostData(MotusDataToPlatfrom &mMotusDataToPlatfrom)
     sendCount++;
     mMotusSocket.sendData((char*)&mMotusDataToPlatfrom,sizeof(MotusDataToPlatfrom));
 }
-
 
 //发送个数
 unsigned int MotusPlatfromSockt::getSendCount()
