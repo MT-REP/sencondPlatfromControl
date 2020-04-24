@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //数据保存
     mMotusSaveData =new MotusSaveData(this);
     //单缸运动
-    //mMotusCylinder =new MotusCylinder(this);//单缸运动对象
+    mMotusCylinder =new MotusCylinder(this);//单缸运动对象
     //删除标签页
     ui->functionTabWidget->removeTab(0);
     ui->functionTabWidget->removeTab(0);
@@ -46,10 +46,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
     connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
 
-    //ui->functionTabWidget->insertTab(4,mMotusCylinder,"单缸运动");
-    //connect(mMotusCylinder,SIGNAL(recvHandCmd(int)),this,SLOT(recvHandCmd(int)));
-    //connect(mMotusCylinder,SIGNAL(recvHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
-    //connect(mMotusCylinder,SIGNAL(recvHandValue(float)),this,SLOT(recvHandValue(float)));
+    ui->functionTabWidget->insertTab(4,mMotusCylinder,"单缸运动");
+    connect(mMotusCylinder,SIGNAL(recvHandCmd(int)),this,SLOT(recvHandCmd(int)));
+    connect(mMotusCylinder,SIGNAL(recvHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
+    connect(mMotusCylinder,SIGNAL(recvHandValue(float)),this,SLOT(recvHandValue(float)));
 
 
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
@@ -482,6 +482,7 @@ void MainWindow::clearSingleStepData()
         mMotusSingleStepData.AttuSpeed[i]=0.f;
     }
     mMotusSingleStepData.status=2;
+    sonCmd=0;
     function=FunctionNull;
 }
 
@@ -531,6 +532,7 @@ void MainWindow::clearSinData()
         mMotusSinStruct.freAttu[i]=0.f;		//指令运行正弦频率
         mMotusSinStruct.phaseAttu[i]=0.f;
     }
+    sonCmd=0;
     function=FunctionNull;
 }
 
@@ -551,22 +553,22 @@ void MainWindow::recvCarryOut()
     emit sendDataCarryOut(mMDataSave);
 }
 
-//
+//接收手动指令
 void MainWindow::recvHandCmd(int cmd)
 {
-
+    Cmd=cmd;
 }
 
-//
+//电动缸选择
 void MainWindow::recvHandMerve(unsigned char merve)
 {
-
+    sendStruct.CyChoose=merve;
 }
 
-//
+//电动缸运行速度
 void MainWindow::recvHandValue(float data)
 {
-
+    sendStruct.JogSpeed=data;
 }
 
 

@@ -187,9 +187,11 @@ public slots:
     void recvDataIsSave(bool *iswitch,bool isave);
     //执行函数
     void recvCarryOut();
-
+    //手动指令
     void recvHandCmd(int cmd);
+    //电动缸选择
     void recvHandMerve(unsigned char merve);
+    //电动缸运动速度
     void recvHandValue(float data);
 private slots:
     void on_startStopButton_clicked();

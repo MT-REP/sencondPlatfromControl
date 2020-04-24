@@ -39,6 +39,8 @@ void MotusCylinder::on_sureButton_clicked()
 void MotusCylinder::on_addButton_clicked()
 {
     float data=ui->lineEdit->text().toFloat();
+    if(!subMark)
+        return;
     if(!addMark)
     {
         emit sendHandValue(data);
@@ -57,6 +59,8 @@ void MotusCylinder::on_addButton_clicked()
 void MotusCylinder::on_subButton_clicked()
 {
     float data=ui->lineEdit->text().toFloat();
+    if(!addMark)
+        return;
     if(!subMark)
     {
         emit sendHandValue(-1.f*data);
