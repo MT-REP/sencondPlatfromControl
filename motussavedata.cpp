@@ -11,6 +11,7 @@ MotusSaveData::MotusSaveData(QWidget *parent) :
     ui->setupUi(this);
 }
 
+//析构函数
 MotusSaveData::~MotusSaveData()
 {
     delete ui;

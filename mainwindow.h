@@ -6,7 +6,6 @@
 #include "motusplatfromsockt.h"
 #include "motusfilerun.h"
 #include "motussine.h"
-#include "motussinglestep.h"
 #include "motusqwtplot.h"
 #include "motussavedata.h"
 #include "motuscylinder.h"
@@ -134,7 +133,6 @@ private:
     MotusPlatfromSockt mMotusPlatfromSockt; //平台发送UDP对象
     MotusFileRun *mMotusFileRun;       //文件运动对象
     MotusSine *mMotusSine;             //正弦运动对象
-    MotusSingleStep *mMotusSingleStep; //单步运动对象
     MotusSaveData *mMotusSaveData;     //数据保存对象
     MDataSave mMDataSave;              //数据保存结构体
     MotusCylinder *mMotusCylinder;     //单缸运动对象
@@ -172,7 +170,7 @@ signals:
     void sendMovieCount(unsigned int movieCount);
     //设置文件运动按键是否可用
     void setFileRunButton(bool valid);
-
+    //数据的保存
     void sendDataCarryOut(MDataSave &);
 public slots:
     //主时钟
@@ -185,9 +183,11 @@ public slots:
     void recvSinData(float *pos,float *spd,float *value,float *fre, float *phase);
     //正弦停止
     void recvSinStop();
-
+    //数据是否保存
     void recvDataIsSave(bool *iswitch,bool isave);
+    //执行函数
     void recvCarryOut();
+
     void recvHandCmd(int cmd);
     void recvHandMerve(unsigned char merve);
     void recvHandValue(float data);

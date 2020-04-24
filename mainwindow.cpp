@@ -23,10 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMotusFileRun=new MotusFileRun(this);
     //正弦运动对象
     mMotusSine =new MotusSine(this);
-    //单步运动对象
-    //mMotusSingleStep =new MotusSingleStep(this);
     //数据保存
-    //mMotusSaveData =new MotusSaveData(this);
+    mMotusSaveData =new MotusSaveData(this);
     //单缸运动
     //mMotusCylinder =new MotusCylinder(this);//单缸运动对象
     //删除标签页
@@ -43,10 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(sendMovieCount(unsigned int)),mMotusFileRun,SLOT(recvMovieCount(unsigned int)));
     connect(this,SIGNAL(setFileRunButton(bool)),mMotusFileRun,SLOT(recvFileRunButton(bool)));
 
-    //ui->functionTabWidget->insertTab(3,mMotusSaveData,"数据保存");
-    //connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));
-    //connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
-    //connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
+    ui->functionTabWidget->insertTab(2,mMotusSaveData,"数据保存");
+    connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));
+    connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
+    connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
 
     //ui->functionTabWidget->insertTab(4,mMotusCylinder,"单缸运动");
     //connect(mMotusCylinder,SIGNAL(recvHandCmd(int)),this,SLOT(recvHandCmd(int)));
@@ -108,19 +106,19 @@ void MainWindow::masterClock(void)
         }
     }
     //数据保存
-    //if(mMDataSave.isopen&&platStatus!=R_STATUS_Disconnect)
-    //{
-    //    MDataArr tMDataArr;
-    //    for(int i=0;i<6;i++)
-    //    {
-    //        if(mMDataSave.isSave[i])
-    //       {
-    //            tMDataArr.data[2*i]=sendStruct.DOFs[i];
-    //            tMDataArr.data[2*i+1]=sendStruct.DOFs[i];
-    //        }
-    //    }
-    //    mMDataSave.dataList.push_back(tMDataArr);
-    //}
+    if(mMDataSave.isopen&&platStatus!=R_STATUS_Disconnect)
+    {
+        MDataArr tMDataArr;
+        for(int i=0;i<6;i++)
+        {
+            if(mMDataSave.isSave[i])
+           {
+                tMDataArr.data[2*i]=sendStruct.DOFs[i];
+                tMDataArr.data[2*i+1]=recvStrcut.Attitudes[i];
+            }
+        }
+        mMDataSave.dataList.push_back(tMDataArr);
+    }
     mMotusPlatfromSockt.sendHostData(sendStruct);
 }
 
@@ -539,18 +537,18 @@ void MainWindow::clearSinData()
 //接收数据是否保存
 void MainWindow::recvDataIsSave(bool *iswitch,bool isave)
 {
-//   for(int i=0;i<6;i++)
-//   {
-//       mMDataSave.isSave[i]=iswitch[i];
-//   }
-//   mMDataSave.isopen=isave;
+   for(int i=0;i<6;i++)
+   {
+       mMDataSave.isSave[i]=iswitch[i];
+   }
+   mMDataSave.isopen=isave;
 }
 
 //数据保存执行
 void MainWindow::recvCarryOut()
 {
-//    mMDataSave.isopen=false;
-//    emit sendDataCarryOut(mMDataSave);
+    mMDataSave.isopen=false;
+    emit sendDataCarryOut(mMDataSave);
 }
 
 //

@@ -70,9 +70,3 @@ void MotusCylinder::on_subButton_clicked()
     }
 }
 
-////设置按键可用
-//void MotusCylinder::setButtonEnable(bool key1,bool key2)
-//{
-//    ui->addButton->setEnabled(key1);
-//    ui->addButton->setEnabled(key2);
-//}
