@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMotusSaveData =new MotusSaveData(this);
     //单缸运动
     mMotusCylinder =new MotusCylinder(this);//单缸运动对象
+    //特殊功能
+    mMotusInsideCmd = new MotusInsideCmd(this);
     //删除标签页
     ui->functionTabWidget->removeTab(0);
     ui->functionTabWidget->removeTab(0);
@@ -46,11 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
     connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
 
-    ui->functionTabWidget->insertTab(4,mMotusCylinder,"单缸运动");
-    connect(mMotusCylinder,SIGNAL(recvHandCmd(int)),this,SLOT(recvHandCmd(int)));
-    connect(mMotusCylinder,SIGNAL(recvHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
-    connect(mMotusCylinder,SIGNAL(recvHandValue(float)),this,SLOT(recvHandValue(float)));
+    ui->functionTabWidget->insertTab(3,mMotusCylinder,"单缸运动");
+    connect(mMotusCylinder,SIGNAL(sendHandCmd(int)),this,SLOT(recvHandCmd(int)));
+    connect(mMotusCylinder,SIGNAL(sendHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
+    connect(mMotusCylinder,SIGNAL(sendHandValue(float)),this,SLOT(recvHandValue(float)));
 
+    ui->functionTabWidget->insertTab(4,mMotusInsideCmd,"辅助功能");
 
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
     mMotusAngleQwtplot.setXMinMAX(-35,35,10);

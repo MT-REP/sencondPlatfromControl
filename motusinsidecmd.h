@@ -14,7 +14,14 @@ class MotusInsideCmd : public QDialog
 public:
     explicit MotusInsideCmd(QWidget *parent = 0);
     ~MotusInsideCmd();
-
+    bool CheckAppStatus(const QString &appName);
+private slots:
+    //TF
+    void on_TFButton_clicked();
+    //串口
+    void on_serialButton_clicked();
+    //网络
+    void on_netButton_clicked();
 private:
     Ui::MotusInsideCmd *ui;
 };

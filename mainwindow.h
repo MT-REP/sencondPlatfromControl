@@ -9,7 +9,7 @@
 #include "motusqwtplot.h"
 #include "motussavedata.h"
 #include "motuscylinder.h"
-
+#include "motusinsidecmd.h"
 #define MotusDebug
 
 //平台工作状态指令
@@ -136,6 +136,7 @@ private:
     MotusSaveData *mMotusSaveData;     //数据保存对象
     MDataSave mMDataSave;              //数据保存结构体
     MotusCylinder *mMotusCylinder;     //单缸运动对象
+    MotusInsideCmd *mMotusInsideCmd;   //特殊功能界面
     MotusDataToPlatfrom sendStruct;    //发送结构体对象
     MotusDataToHost recvStrcut;        //接收结构体对象
     MotusFileData mMotusFileData;      //数据动作结构体

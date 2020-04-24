@@ -13,6 +13,45 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <widget class="QPushButton" name="TFButton">
+   <property name="geometry">
+    <rect>
+     <x>191</x>
+     <y>50</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>配卡功能</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="serialButton">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>170</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>串口打印</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="netButton">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>300</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>网络打印</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
