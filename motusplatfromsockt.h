@@ -28,7 +28,7 @@
 //    }
 //}MotusDataToHost;
 
-struct DataToHost			//总共108字节
+typedef struct DataToHost			//总共108字节
 {
     unsigned char CheckID;		//标识位 固定为55
     unsigned char DOFStatus;	//下位机状态
@@ -148,9 +148,9 @@ public:
 private:
     MotusSocket mMotusSocket;
     int platStatus;
-    int testStatus;
-    int testCount;
-    bool testSwitch;
+    int courseStatus;
+    int courseCount;
+    bool courseSwitch;
     bool isConnect;
     int ConnectCount;
     unsigned int sendCount;

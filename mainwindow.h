@@ -10,6 +10,9 @@
 #include "motusqwtplot.h"
 #include "motussavedata.h"
 #include "motuscylinder.h"
+
+#define MotusDebug
+
 //平台工作状态指令
 enum M_nCmd
 {
@@ -80,26 +83,16 @@ typedef  struct FileDataStruct
 //单步运动
 typedef  struct singleStepStruct
 {
-    float absAttu[6];
-    float endAttu[6];
     float midAttu[6];
     float AttuSpeed[6];
-    bool isFinish[6];
-    int totalCount[6];
-    int stepCount;
     unsigned char status;//0没有动作 1正在动作 2动作完成
     singleStepStruct()
     {
         for(int i=0;i<6;i++)
         {
-            absAttu[i]=0.0f;
-            endAttu[i]=0.0f;
             midAttu[i]=0.0f;
             AttuSpeed[i]=0.0f;
-            totalCount[i]=0.0f;
-            isFinish[i]=false;
         }
-        stepCount=0;
         status=0;
     }
 }MotusSingleStepData;
@@ -110,12 +103,6 @@ typedef  struct sinStruct
     float valueAttu[6];
     float freAttu[6];
     float phaseAttu[6];
-    float inputview;
-    float timeview;
-    float Kslow;
-    int  BufferStopCount;
-    bool bufferStop;
-    int  stepCount;
     unsigned char status;    //0没有动作 1正在动作 2动作完成
     sinStruct()
     {
@@ -125,9 +112,6 @@ typedef  struct sinStruct
             freAttu[i]=0.f;
             phaseAttu[i]=0.f;
         }
-        timeview=0.f;
-        bufferStop=false;
-        stepCount=0;
         status=0;
     }
 }MotusSinStruct;
@@ -160,7 +144,8 @@ private:
     MotusSingleStepData mMotusSingleStepData;
     MotusSinStruct mMotusSinStruct;
     unsigned char function;            //功能
-    int nCmd;                          //平台命令
+    int Cmd;                           //平台主命令
+    int sonCmd;                        //平台子命令
     int platStatus;                    //平台状态
     bool keyEnable[5];
     //平台状态显示
@@ -183,17 +168,24 @@ private:
     void keySetEnable();
 signals:
     void sendSingleStepButton(bool valid);
+    //设置文件运动运动的个数
     void sendMovieCount(unsigned int movieCount);
+    //设置文件运动按键是否可用
     void setFileRunButton(bool valid);
-    void sendTimeView(float timeView);
-    void sendSinInterrupt(void);
+
     void sendDataCarryOut(MDataSave &);
 public slots:
-    void masterClock(void);           //主时钟
+    //主时钟
+    void masterClock(void);
+    //接收文件运动数据
     void recvMovieData(QList<M_MovieData>&movieData,float *data);
+    //接收单步运动数据
     void recvSingleStepData(float *pos,float *speed);
-    void recvSinData(int totaltime,float *value,float *fre, float *phase);
+    //接收数据正弦
+    void recvSinData(float *pos,float *spd,float *value,float *fre, float *phase);
+    //正弦停止
     void recvSinStop();
+
     void recvDataIsSave(bool *iswitch,bool isave);
     void recvCarryOut();
     void recvHandCmd(int cmd);

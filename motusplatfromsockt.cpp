@@ -7,9 +7,9 @@ MotusPlatfromSockt::MotusPlatfromSockt(QObject *parent) : QObject(parent)
    sendCount=0;
    recvCount=0;
    platStatus=88;
-   testStatus=88;
-   testCount=0;
-   testSwitch=false;
+   courseStatus=88;
+   courseCount=0;
+   courseSwitch=false;
 }
 
 //平台参数初始化
@@ -26,24 +26,24 @@ void MotusPlatfromSockt::recvData(char *data,int length)
     if(sizeof(MotusDataToHost)==length)
     {
         memcpy(&mMotusDataToHost,data,length);
-        if(mMotusDataToHost.nDOFStatus!=platStatus)
+        if(mMotusDataToHost.DOFStatus!=platStatus)
         {
-            if(testStatus!=mMotusDataToHost.nDOFStatus)
+            if(courseStatus!=mMotusDataToHost.DOFStatus)
             {
-                testStatus=mMotusDataToHost.nDOFStatus;
-                testCount=0;
-                testSwitch=true;
+                courseStatus=mMotusDataToHost.DOFStatus;
+                courseCount=0;
+                courseSwitch=true;
             }
         }
-        if(testSwitch&&(testStatus==mMotusDataToHost.nDOFStatus))
+        if(courseSwitch&&(courseStatus==mMotusDataToHost.DOFStatus))
         {
-            if(testCount>=10)
+            if(courseCount>=10)
             {
-                platStatus=testStatus;
-                testCount=0;
-                testSwitch=false;
+                platStatus=courseStatus;
+                courseCount=0;
+                courseSwitch=false;
             }
-            else testCount++;
+            else courseCount++;
         }
         isConnect=true;
         ConnectCount=0;

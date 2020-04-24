@@ -39,20 +39,20 @@ private slots:
 private:
     Ui::MotusFileRun *ui;
     QList<M_MovieData> movieData; //文件数据
-    float maxValue[6];
-    float minValue[6];
-    float maxSpeed[6];
-    float maxAcc[6];
-    unsigned int  totalLength;
-    float fileTime;
-    QString fileName;
+    float maxValue[6];            //最大值
+    float minValue[6];            //最小值
+    float maxSpeed[6];            //最大速度
+    float maxAcc[6];              //最大加速度
+    unsigned int  totalLength;    //数据总长
+    float fileTime;               //总时间
+    QString fileName;             //文件名字
     QLineEdit *maxValueEdit[6];
     QLineEdit *minValueEdit[6];
     QLineEdit *maxSpeedEdit[6];
     QLineEdit *maxAccEdit[6];
-    void setInitValue();
-    bool readtxtfile(QString filename);
-    void messageView();
+    void setInitValue();          //数据初始化
+    bool readtxtfile(QString filename);//读数据文件
+    void messageView();           //消息提示
 };
 
 #endif // MOTUSFILERUN_H

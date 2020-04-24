@@ -29,7 +29,6 @@ SOURCES += \
     motustimer.cpp \
     motussocket.cpp \
     motusplatfromsockt.cpp \
-    motussinglestep.cpp \
     motussine.cpp \
     motusfilerun.cpp \
     motusqwtplot.cpp \
@@ -42,7 +41,6 @@ HEADERS += \
     motustimer.h \
     motussocket.h \
     motusplatfromsockt.h \
-    motussinglestep.h \
     motussine.h \
     motusfilerun.h \
     motusqwtplot.h \
@@ -52,7 +50,6 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui \
-    motussinglestep.ui \
     motussine.ui \
     motusfilerun.ui \
     motussavedata.ui \

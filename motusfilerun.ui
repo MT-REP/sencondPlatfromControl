@@ -595,7 +595,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>最大速度：纵倾.横摇.航向单位为度每秒,横移.前冲.升降单位为毫米没秒</string>
+    <string>最大速度：纵倾.横摇.航向单位为度每秒,横移.前冲.升降单位为毫米每秒</string>
    </property>
   </widget>
  </widget>

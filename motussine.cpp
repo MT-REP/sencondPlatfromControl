@@ -3,20 +3,39 @@
 #include <QIntValidator>
 #include <QDoubleValidator>
 #include <QRegExpValidator>
-
+//构造函数
 MotusSine::MotusSine(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MotusSine)
 {
     ui->setupUi(this);
+    //单步运动对话框
+    pos[0]=ui->zongqingposEdit;
+    speed[0]=ui->zongqingspeedEdit;
+
+    pos[1]=ui->hengyaoposEdit;
+    speed[1]=ui->hengyaospeedEdit;
+
+    pos[2]=ui->hangxiangposEdit;
+    speed[2]=ui->hangxiangspeedEdit;
+
+    pos[3]=ui->hengyiposEdit;
+    speed[3]=ui->hengyispeedEdit;
+
+    pos[4]=ui->qianchongposEdit;
+    speed[4]=ui->qianchongspeedEdit;
+
+    pos[5]=ui->shengjiangposEdit;
+    speed[5]=ui->shengjiangspeedEdit;
+    ///////////////////////////////////////////////
+
     QRegExp rx("^[0-9]+[.]?[0-9]+$");
     QRegExpValidator *validator = new QRegExpValidator(rx, this);
-    ui->totalTimeEdit->setValidator(new QIntValidator(0, 9999, this));
     //限制输入格式
-    ui->accEdit->setValidator(validator);
-    ui->accedit->setValidator(validator);
+    ui->valueEdit->setValidator(validator);
     ui->freEdit->setValidator(validator);
-    ui->freedit->setValidator(validator);
+    ui->speededit->setValidator(validator);
+    ui->accedit->setValidator(validator);
     //赋值
     value[0]=ui->zongqingvalueEdit;
     fre[0]=ui->zongqingfreEdit;
@@ -44,6 +63,15 @@ MotusSine::MotusSine(QWidget *parent) :
 
     for(int i=0;i<6;i++)
     {
+        attpos[i]=0.f;
+        attspeed[i]=0.f;
+        pos[i]->setValidator(validator);
+        speed[i]->setValidator(validator);
+        pos[i]->setText(QString("%1").arg(0));
+        if(i<3)
+             speed[i]->setText(QString("%1").arg(1));
+        else
+             speed[i]->setText(QString("%1").arg(10));
         //输入限制
         value[i]->setValidator(validator);
         fre[i]->setValidator(validator);
@@ -86,8 +114,6 @@ void MotusSine::on_sinStartButton_clicked()
     float valueEdit[6];
     float freEdit[6];
     float phaseEdit[6];
-    int totaltime;
-    totaltime=ui->totalTimeEdit->text().toInt();
     for(int i=0;i<6;i++)
     {
         valueEdit[i]=value[i]->text().toFloat();
@@ -96,7 +122,8 @@ void MotusSine::on_sinStartButton_clicked()
     }
     ui->sinStartButton->setEnabled(false);
     ui->buffStopButton->setEnabled(true);
-    emit sendSinData(totaltime,valueEdit,freEdit, phaseEdit);
+    getPara();
+    emit sendSinData(attpos,attspeed,valueEdit,freEdit, phaseEdit);
 }
 
 //正弦停止
@@ -106,22 +133,22 @@ void MotusSine::on_buffStopButton_clicked()
     emit sendSinStop();
 }
 
-//接受时间显示
- void MotusSine::recvTimeView(float timeView)
- {
-    int judge=int(timeView*100.f);
-    if(judge==0)
+ //得到参数
+void MotusSine::getPara()
+{
+    for(int i=0;i<6;i++)
     {
-        ui->sinStartButton->setEnabled(true);
-        ui->buffStopButton->setEnabled(false);
+         attpos[i]=pos[i]->text().toFloat();
+         //速度
+         attspeed[i]=speed[i]->text().toFloat();
     }
-    ui->bufferTimeEdit->setText(QString("%1").arg(QString::number(timeView,'f',2)));
- }
+}
 
- //正弦中断
- void MotusSine::recvSinInterrupt(void)
- {
-     ui->sinStartButton->setEnabled(true);
-     ui->buffStopButton->setEnabled(false);
-     ui->bufferTimeEdit->setText("0");
- }
+//单步运动
+void MotusSine::on_carryOutButton_clicked()
+{
+    getPara();
+    emit sendSingleStepData(attpos,attspeed);
+    ui->sinStartButton->setEnabled(false);
+    ui->buffStopButton->setEnabled(false);
+}
