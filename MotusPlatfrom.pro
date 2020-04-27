@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += serialport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MotusPlatfrom
@@ -34,7 +35,10 @@ SOURCES += \
     motusqwtplot.cpp \
     motussavedata.cpp \
     motuscylinder.cpp \
-    motusinsidecmd.cpp
+    motusinsidecmd.cpp \
+    motussingleqwtplot.cpp \
+    motusserialdialog.cpp \
+    motusrecvdataviewdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +50,10 @@ HEADERS += \
     motusqwtplot.h \
     motussavedata.h \
     motuscylinder.h \
-    motusinsidecmd.h
+    motusinsidecmd.h \
+    motussingleqwtplot.h \
+    motusserialdialog.h \
+    motusrecvdataviewdialog.h
 
 FORMS += \
         mainwindow.ui \
@@ -54,7 +61,9 @@ FORMS += \
     motusfilerun.ui \
     motussavedata.ui \
     motuscylinder.ui \
-    motusinsidecmd.ui
+    motusinsidecmd.ui \
+    motusserialdialog.ui \
+    motusrecvdataviewdialog.ui
 
 RC_FILE = motus.rc
 

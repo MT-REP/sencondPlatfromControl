@@ -16,6 +16,7 @@ public:
     ~MotusInsideCmd();
     bool CheckAppStatus(const QString &appName);
 private slots:
+    void recvSerialPortOpen(bool open);
     //TF
     void on_TFButton_clicked();
     //串口
@@ -24,6 +25,7 @@ private slots:
     void on_netButton_clicked();
 private:
     Ui::MotusInsideCmd *ui;
+    bool serialOpen;
 };
 
 #endif // MOTUSINSIDECMD_H

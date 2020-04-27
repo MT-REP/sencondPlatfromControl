@@ -1,5 +1,6 @@
 #include "motusinsidecmd.h"
 #include "ui_motusinsidecmd.h"
+#include "motusserialdialog.h"
 #include <QProcess>
 #include <QDir>
 #include <QStringList>
@@ -9,6 +10,7 @@ MotusInsideCmd::MotusInsideCmd(QWidget *parent) :
     ui(new Ui::MotusInsideCmd)
 {
     ui->setupUi(this);
+    serialOpen=false;
 }
 
 MotusInsideCmd::~MotusInsideCmd()
@@ -26,10 +28,22 @@ void MotusInsideCmd::on_TFButton_clicked()
     QProcess::startDetached(strdir,QStringList());
 }
 
-//
+//串口打印窗口
 void MotusInsideCmd::on_serialButton_clicked()
 {
+    if(!serialOpen)
+    {
+        serialOpen=true;
+        MotusSerialDialog *mMotusSerialDialog= new MotusSerialDialog(this);
+        connect(mMotusSerialDialog,SIGNAL(sendClose(bool)),this,SLOT(recvSerialPortOpen(bool)));
+        mMotusSerialDialog->show();
+    }
+}
 
+//判断串口窗口是否关闭
+void MotusInsideCmd::recvSerialPortOpen(bool open)
+{
+    serialOpen=open;
 }
 
 //
