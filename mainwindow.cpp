@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    netDataView=false;
     //
     function=0;
     //平台命令
@@ -54,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mMotusCylinder,SIGNAL(sendHandValue(float)),this,SLOT(recvHandValue(float)));
 
     ui->functionTabWidget->insertTab(4,mMotusInsideCmd,"辅助功能");
+    connect(mMotusInsideCmd,SIGNAL(sendNetDataView(bool)),this,SLOT(recvNetDataView(bool)));
+    connect(this,SIGNAL(sendNetData(MotusDataToHost&)),mMotusInsideCmd,SIGNAL(sendNetData(MotusDataToHost&)));
 
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
     mMotusAngleQwtplot.setXMinMAX(-35,35,10);
@@ -88,6 +92,10 @@ void MainWindow::masterClock(void)
 {
     //得到接收数据
     mMotusPlatfromSockt.getRecvHostData(recvStrcut);
+    if(netDataView)
+    {
+        emit sendNetData(recvStrcut);
+    }
     //得到平台状态
     platStatus=mMotusPlatfromSockt.getStatus();
     sendStruct.Cmd=Cmd;
@@ -574,7 +582,11 @@ void MainWindow::recvHandValue(float data)
     sendStruct.JogSpeed=data;
 }
 
-
+//数据是否可显示
+void MainWindow::recvNetDataView(bool view)
+{
+    netDataView=view;
+}
 
 
 

@@ -147,6 +147,7 @@ private:
     int sonCmd;                        //平台子命令
     int platStatus;                    //平台状态
     bool keyEnable[5];
+    bool netDataView;
     //平台状态显示
     void statusView();
     //界面显示
@@ -173,6 +174,8 @@ signals:
     void setFileRunButton(bool valid);
     //数据的保存
     void sendDataCarryOut(MDataSave &);
+    //发送接收数据
+    void sendNetData(MotusDataToHost &mMotusDataToHost);
 public slots:
     //主时钟
     void masterClock(void);
@@ -194,6 +197,8 @@ public slots:
     void recvHandMerve(unsigned char merve);
     //电动缸运动速度
     void recvHandValue(float data);
+    //数据是否可显示
+    void recvNetDataView(bool view);
 private slots:
     void on_startStopButton_clicked();
     void on_searchBottomButton_clicked();

@@ -38,7 +38,8 @@ SOURCES += \
     motusinsidecmd.cpp \
     motussingleqwtplot.cpp \
     motusserialdialog.cpp \
-    motusrecvdataviewdialog.cpp
+    motusrecvdataviewdialog.cpp \
+    motusvirtualplatfromdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     motusinsidecmd.h \
     motussingleqwtplot.h \
     motusserialdialog.h \
-    motusrecvdataviewdialog.h
+    motusrecvdataviewdialog.h \
+    motusvirtualplatfromdialog.h
 
 FORMS += \
         mainwindow.ui \
@@ -63,7 +65,8 @@ FORMS += \
     motuscylinder.ui \
     motusinsidecmd.ui \
     motusserialdialog.ui \
-    motusrecvdataviewdialog.ui
+    motusrecvdataviewdialog.ui \
+    motusvirtualplatfromdialog.ui
 
 RC_FILE = motus.rc
 

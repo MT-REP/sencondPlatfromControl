@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="TFButton">
    <property name="geometry">
     <rect>
-     <x>191</x>
-     <y>50</y>
+     <x>80</x>
+     <y>100</y>
      <width>81</width>
      <height>51</height>
     </rect>
@@ -29,8 +29,8 @@
   <widget class="QPushButton" name="serialButton">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>170</y>
+     <x>270</x>
+     <y>100</y>
      <width>81</width>
      <height>51</height>
     </rect>
@@ -42,7 +42,7 @@
   <widget class="QPushButton" name="netButton">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>80</x>
      <y>300</y>
      <width>81</width>
      <height>51</height>
@@ -50,6 +50,19 @@
    </property>
    <property name="text">
     <string>网络打印</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="virtualButton">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>300</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>虚拟下位机</string>
    </property>
   </widget>
  </widget>
