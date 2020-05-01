@@ -61,14 +61,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
     mMotusAngleQwtplot.setXMinMAX(-35,35,10);
-    QString name[3]={"纵倾","横摇","航向"};
-    QColor color[3]={QColor(255,0,0),QColor(255,128,0),QColor(128,255,0)};
+    QString name[6]={"理论纵倾","理论横摇","理论航向","实际纵倾","实际横摇","实际航向"};
+    QColor color[6]={QColor(255,0,0),QColor(255,128,0),QColor(128,255,0),QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
     mMotusAngleQwtplot.setCurve(name,color);
 
     mMotusPlaceQwtplot.initPara(ui->displacementQwtPlot);
     mMotusPlaceQwtplot.setXMinMAX(-650,650,100);
-    QString placename[3]={"横移","前冲","升降"};
-    QColor placecolor[3]={QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
+    QString placename[6]={"理论横移","理论前冲","理论升降","实际横移","实际前冲","实际升降"};
+    QColor placecolor[6]={QColor(255,0,0),QColor(255,128,0),QColor(128,255,0),QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
     mMotusPlaceQwtplot.setCurve(placename,placecolor);
 
 #ifdef MotusRelase
@@ -356,14 +356,20 @@ void MainWindow::interfaceView()
         ui->code6Edit->setText(QString("%1").arg(QString::number(recvStrcut.MotorCode[5],'f',2)));
         ///////////////////////////////////////////////////////////////////////////////////////////////
     }
-    float data[3];
+    float data[6];
     data[0]=sendStruct.DOFs[0];
     data[1]=sendStruct.DOFs[1];
     data[2]=sendStruct.DOFs[2];
-    float tdata[3];
+    data[3]=recvStrcut.Attitudes[0];
+    data[4]=recvStrcut.Attitudes[1];
+    data[5]=recvStrcut.Attitudes[2];
+    float tdata[6];
     tdata[0]=sendStruct.DOFs[3]*1000.f;
     tdata[1]=sendStruct.DOFs[4]*1000.f;
     tdata[2]=sendStruct.DOFs[5]*1000.f;
+    tdata[3]=recvStrcut.Attitudes[3]*1000.f;
+    tdata[4]=recvStrcut.Attitudes[4]*1000.f;
+    tdata[5]=recvStrcut.Attitudes[5]*1000.f;
     //画曲线
     mMotusAngleQwtplot.lineView(data);
     mMotusPlaceQwtplot.lineView(tdata);
@@ -461,8 +467,6 @@ void MainWindow::recvMovieData(QList<M_MovieData>&movieData,float *data)
     mMotusFileData.movieData=movieData;
     mMotusFileData.status=1;
     mMotusFileData.movieCount=0;
-    mMotusAngleQwtplot.dynamicXMinMAX(data);
-    mMotusPlaceQwtplot.dynamicXMinMAX(&data[3]);
     function=MovieFuntion;
 }
 
@@ -497,8 +501,6 @@ void MainWindow::recvSingleStepData(float *pos,float *speed)
         }
     }
     mMotusSingleStepData.status=1;
-    mMotusAngleQwtplot.dynamicXMinMAX(value);
-    mMotusPlaceQwtplot.dynamicXMinMAX(&value[3]);
     Cmd=S_CMD_AutoMove;
     sonCmd=0;
     function=SingleStepFunction;
@@ -538,8 +540,6 @@ void MainWindow::recvSinData(float *pos,float *spd,float *value,float *fre, floa
         mMotusSinStruct.phaseAttu[i]=phase[i];
     }
     mMotusSinStruct.status=1;
-    mMotusAngleQwtplot.dynamicXMinMAX(value);
-    mMotusPlaceQwtplot.dynamicXMinMAX(&value[3]);
     Cmd=S_CMD_AutoMove;
     sonCmd=0;
     function=SinFunction;

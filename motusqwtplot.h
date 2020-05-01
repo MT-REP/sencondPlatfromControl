@@ -31,18 +31,16 @@ public:
     //设置X轴的最大最小值
     void setXMinMAX(double min,double max,double step);
     //设置曲线颜色和名字
-    void setCurve(QString name[3],QColor linecolor[3]);
+    void setCurve(QString name[6],QColor linecolor[6]);
     //画曲线
-    void lineView(float data[3]);
-    //
-    void dynamicXMinMAX(float data[3]);
+    void lineView(float data[6]);
 private:
     QwtPlot *qwtView;
-    QwtPlotCurve *curve[3];
+    QwtPlotCurve *curve[6];
     QwtLegend *legend;
     QwtPlotGrid* grid;
     QVector<double> xcoord;
-    QVector<double> vector[3];
+    QVector<double> vector[6];
 signals:
 
 public slots:
