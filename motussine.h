@@ -13,6 +13,7 @@ class MotusSine : public QDialog
 
 public:
     explicit MotusSine(QWidget *parent = 0);
+    void enableButton();
     ~MotusSine();
 signals:
     void sendSingleStepData(float *pos,float *speed);

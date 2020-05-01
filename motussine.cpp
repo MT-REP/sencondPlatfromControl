@@ -3,6 +3,7 @@
 #include <QIntValidator>
 #include <QDoubleValidator>
 #include <QRegExpValidator>
+#include <QDebug>
 //构造函数
 MotusSine::MotusSine(QWidget *parent) :
     QDialog(parent),
@@ -81,7 +82,9 @@ MotusSine::MotusSine(QWidget *parent) :
         fre[i]->setText(QString("%1").arg(0.1f));
         phase[i]->setText(QString("%1").arg(0));
     }
+#ifdef MotusRelase
     ui->buffStopButton->setEnabled(false);
+#endif
 }
 
 //析构函数
@@ -120,16 +123,27 @@ void MotusSine::on_sinStartButton_clicked()
         freEdit[i]=fre[i]->text().toFloat();
         phaseEdit[i]=phase[i]->text().toFloat();
     }
-    ui->sinStartButton->setEnabled(false);
-    ui->buffStopButton->setEnabled(true);
     getPara();
     emit sendSinData(attpos,attspeed,valueEdit,freEdit, phaseEdit);
+#ifdef MotusRelase
+    ui->sinStartButton->setEnabled(false);
+    ui->buffStopButton->setEnabled(true);
+    ui->carryOutButton->setEnabled(false);
+#endif
+}
+
+void MotusSine::enableButton()
+{
+    ui->sinStartButton->setEnabled(true);
+    ui->carryOutButton->setEnabled(true);
 }
 
 //正弦停止
 void MotusSine::on_buffStopButton_clicked()
 {
+#ifdef MotusRelase
     ui->buffStopButton->setEnabled(false);
+#endif
     emit sendSinStop();
 }
 
@@ -149,6 +163,8 @@ void MotusSine::on_carryOutButton_clicked()
 {
     getPara();
     emit sendSingleStepData(attpos,attspeed);
-    ui->sinStartButton->setEnabled(false);
-    ui->buffStopButton->setEnabled(false);
+#ifdef MotusRelase
+        ui->sinStartButton->setEnabled(false);
+        ui->buffStopButton->setEnabled(false);
+#endif
 }

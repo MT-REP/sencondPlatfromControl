@@ -6,9 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    //网络接收数据是否可显示
     netDataView=false;
-    //
+    //功能函数定义
     function=0;
     //平台命令
     Cmd=0;
@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor placecolor[3]={QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
     mMotusPlaceQwtplot.setCurve(placename,placecolor);
 
-#ifndef MotusDebug
+#ifdef MotusRelase
     ui->searchBottomButton->setEnabled(false);  keyEnable[0]=false;
     ui->riseButton->setEnabled(false);          keyEnable[1]=false;
     ui->runButton->setEnabled(false);           keyEnable[2]=false;
@@ -236,60 +236,80 @@ void MainWindow::interfaceView()
     totalcount++;
     if(totalcount%50==0)
     {
-        #ifndef  MotusDebug
-        if(platStatus!=R_STATUS_Run)
+        #ifdef  MotusRelase
+        //手动功能
+        if(platStatus == R_STATUS_JOG)
         {
-            clearSinData();
-            clearMovieData();
-            clearSingleStepData();
             ui->functionTabWidget->setTabEnabled(0,false);
             ui->functionTabWidget->setTabEnabled(1,false);
             ui->functionTabWidget->setTabEnabled(2,false);
         }
-        else if(platStatus==R_STATUS_Run)
+        //手动界面禁用
+        if(platStatus != R_STATUS_JOG && platStatus !=R_STATUS_Idle && platStatus != R_STATUS_Disconnect)
+        {
+            mMotusCylinder->forbiddenButton();
+        }
+        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_Run)
+        {
+             ui->functionTabWidget->setTabEnabled(1,false);
+        }
+        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_AUTOMOVE)
+        {
+             ui->functionTabWidget->setTabEnabled(0,false);
+        }
+        if(platStatus == R_STATUS_Worked||platStatus == R_STATUS_Back2Mided)
+        {
+            clearSinData();
+            clearMovieData();
+            clearSingleStepData();
+            ui->functionTabWidget->setTabEnabled(0,true);
+            ui->functionTabWidget->setTabEnabled(1,true);
+            ui->functionTabWidget->setTabEnabled(3,true);
+            mMotusSine->enableButton();
+        }
+        //文件运动
+        if(platStatus==R_STATUS_Run)
+        {
+            if(mMotusFileData.status==1)
+            {
+                ui->functionTabWidget->setTabEnabled(0,false);
+                ui->functionTabWidget->setTabEnabled(3,false);
+            }
+        }
+        if(platStatus==R_STATUS_AUTOMOVE)
         {
             if(mMotusSinStruct.status==1)
             {
                 ui->functionTabWidget->setTabEnabled(1,false);
-                ui->functionTabWidget->setTabEnabled(2,false);
-            }
-            else if(mMotusFileData.status==1)
-            {
-                ui->functionTabWidget->setTabEnabled(0,false);
-                ui->functionTabWidget->setTabEnabled(1,false);
+                ui->functionTabWidget->setTabEnabled(3,false);
             }
             else if(mMotusSingleStepData.status==1)
             {
-                ui->functionTabWidget->setTabEnabled(0,false);
-                ui->functionTabWidget->setTabEnabled(2,false);
+                ui->functionTabWidget->setTabEnabled(1,false);
+                ui->functionTabWidget->setTabEnabled(3,false);
             }
-            else
-            {
-                ui->functionTabWidget->setTabEnabled(0,true);
-                ui->functionTabWidget->setTabEnabled(1,true);
-                ui->functionTabWidget->setTabEnabled(2,true);
-            }
+
         }
         //按键显示
         switch(platStatus)
         {
-           case R_STATUS_Initting: {   keyEnable[0]=false; keyEnable[1]=false; break;   }
-           case R_STATUS_Inited:   {   keyEnable[0]=false; keyEnable[1]=true; break;    }
-           case R_STATUS_Working:  {   keyEnable[0]=false; keyEnable[1]=false; break;   }
-           case R_STATUS_Worked:   {   keyEnable[2]=true;  break;                       }
+           case R_STATUS_Initting:  {   keyEnable[0]=false; keyEnable[1]=false; break;   }
+           case R_STATUS_Inited:    {   keyEnable[0]=false; keyEnable[1]=true;  break;   }
+           case R_STATUS_Working:   {   keyEnable[0]=false; keyEnable[1]=false; break;   }
+           case R_STATUS_Worked:    {   keyEnable[2]=true;  break;                       }
            case R_STATUS_Run:
            case R_STATUS_AUTOMOVE:
            case R_STATUS_CenterPoint:
            case R_STATUS_ChaConf:
            case R_STATUS_RomRuning:
            case R_STATUS_RomRuned:
-           case R_STATUS_Topped:   { keyEnable[2]=false; keyEnable[3]=true;keyEnable[4]=true; break; }
-           case R_STATUS_Stopping: { keyEnable[2]=false; keyEnable[3]=false;keyEnable[4]=false; break; }
-           case R_STATUS_Stopped:  { keyEnable[1]=true; break;   }
+           case R_STATUS_Topped:     { keyEnable[2]=false; keyEnable[3]=true;keyEnable[4]=true; break; }
+           case R_STATUS_Stopping:   { keyEnable[2]=false; keyEnable[3]=false;keyEnable[4]=false; break; }
+           case R_STATUS_Stopped:    { keyEnable[1]=true; break;   }
            case R_STATUS_Back2Miding:{ keyEnable[2]=false; keyEnable[3]=false;keyEnable[4]=false; break; }
            case R_STATUS_Back2Mided: { keyEnable[2]=true; keyEnable[3]=false;keyEnable[4]=true; break; }
            case R_STATUS_Idle:       { keyEnable[0]=true; keyEnable[1]=true; break;    }
-           case R_STATUS_JOG:
+           case R_STATUS_JOG:        {keyEnable[0]=false; keyEnable[1]=false;keyEnable[2]=false; keyEnable[3]=false;keyEnable[4]=false; break;}
            case R_STATUS_ToMerg:
            case R_STATUS_Disconnect: {keyEnable[0]=false; keyEnable[1]=false;keyEnable[2]=false; keyEnable[3]=false;keyEnable[4]=false; break; }
         }
@@ -351,39 +371,39 @@ void MainWindow::interfaceView()
 
 void MainWindow::keySetEnable()
 {
-//    static bool oldkey[5]={false,false,false,false,false};
-//    //qDebug()<<oldkey[0]<<oldkey[1]<<oldkey[2]<<oldkey[3]<<oldkey[4];
-//    if(oldkey[0]!=keyEnable[0])
-//    {
-//        if(keyEnable[0]) ui->searchBottomButton->setEnabled(true);
-//        else ui->searchBottomButton->setEnabled(false);
-//        oldkey[0]=keyEnable[0];
-//    }
-//    if(oldkey[1]!=keyEnable[1])
-//    {
-//        if(keyEnable[1]) ui->riseButton->setEnabled(true);
-//        else ui->riseButton->setEnabled(false);
-//        oldkey[1]=keyEnable[1];
-//    }
-//    if(oldkey[2]!=keyEnable[2])
-//    {
-//        if(keyEnable[2]) ui->runButton->setEnabled(true);
-//        else ui->runButton->setEnabled(false);
-//        oldkey[2]=keyEnable[2];
-//    }
-//    if(oldkey[3]!=keyEnable[3])
-//    {
-//        if(keyEnable[3]) ui->midButton->setEnabled(true);
-//        else ui->midButton->setEnabled(false);
-//        oldkey[3]=keyEnable[3];
-//    }
-//    if(oldkey[4]!=keyEnable[4])
-//    {
-//        if(keyEnable[4]) ui->downButton->setEnabled(true);
-//        else ui->downButton->setEnabled(false);
-//        oldkey[4]=keyEnable[4];
-//    }
-//    repaint();
+    static bool oldkey[5]={false,false,false,false,false};
+    //qDebug()<<oldkey[0]<<oldkey[1]<<oldkey[2]<<oldkey[3]<<oldkey[4];
+    if(oldkey[0]!=keyEnable[0])
+    {
+        if(keyEnable[0]) ui->searchBottomButton->setEnabled(true);
+        else ui->searchBottomButton->setEnabled(false);
+        oldkey[0]=keyEnable[0];
+    }
+    if(oldkey[1]!=keyEnable[1])
+    {
+        if(keyEnable[1]) ui->riseButton->setEnabled(true);
+        else ui->riseButton->setEnabled(false);
+        oldkey[1]=keyEnable[1];
+    }
+    if(oldkey[2]!=keyEnable[2])
+    {
+        if(keyEnable[2]) ui->runButton->setEnabled(true);
+        else ui->runButton->setEnabled(false);
+        oldkey[2]=keyEnable[2];
+    }
+    if(oldkey[3]!=keyEnable[3])
+    {
+        if(keyEnable[3]) ui->midButton->setEnabled(true);
+        else ui->midButton->setEnabled(false);
+        oldkey[3]=keyEnable[3];
+    }
+    if(oldkey[4]!=keyEnable[4])
+    {
+        if(keyEnable[4]) ui->downButton->setEnabled(true);
+        else ui->downButton->setEnabled(false);
+        oldkey[4]=keyEnable[4];
+    }
+    repaint();
 }
 
 //开始按键

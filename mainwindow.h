@@ -10,7 +10,8 @@
 #include "motussavedata.h"
 #include "motuscylinder.h"
 #include "motusinsidecmd.h"
-#define MotusDebug
+
+#define MotusRelase
 
 //平台工作状态指令
 enum M_nCmd

@@ -13,6 +13,7 @@ class MotusCylinder : public QDialog
 
 public:
     explicit MotusCylinder(QWidget *parent = 0);
+    void forbiddenButton();
     ~MotusCylinder();
 signals:
     void sendHandCmd(int cmd);

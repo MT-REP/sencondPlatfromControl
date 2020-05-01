@@ -20,7 +20,11 @@ MotusCylinder::~MotusCylinder()
 void MotusCylinder::on_handButton_clicked()
 {
     emit sendHandCmd(S_CMD_JOG);
+    #ifdef MotusRelase
+        ui->handButton->setEnabled(false);
+    #endif
 }
+
 
 //确认按键
 void MotusCylinder::on_sureButton_clicked()
@@ -33,6 +37,13 @@ void MotusCylinder::on_sureButton_clicked()
     if(ui->checkBox5->isChecked()) merve+=0x10;
     if(ui->checkBox6->isChecked()) merve+=0x20;
     emit sendHandMerve(merve);
+}
+
+void MotusCylinder::forbiddenButton()
+{
+    ui->handButton->setEnabled(false);
+    ui->addButton->setEnabled(false);
+    ui->subButton->setEnabled(false);
 }
 
 //加号按键
