@@ -124,7 +124,7 @@ void MotusSine::on_sinStartButton_clicked()
         phaseEdit[i]=phase[i]->text().toFloat();
     }
     getPara();
-    emit sendSinData(attpos,attspeed,valueEdit,freEdit, phaseEdit);
+    emit sendSinData(attpos,attspeed,valueEdit,freEdit, phaseEdit);//单步位置，单步速度，正弦幅值，频率，相位
 #ifdef MotusRelase
     ui->sinStartButton->setEnabled(false);
     ui->buffStopButton->setEnabled(true);

@@ -39,7 +39,7 @@ void MotusCylinder::on_sureButton_clicked()
     emit sendHandMerve(merve);
 }
 
-void MotusCylinder::forbiddenButton()
+void MotusCylinder::forbiddenButton()//手动，加减按钮不可操作
 {
     ui->handButton->setEnabled(false);
     ui->addButton->setEnabled(false);

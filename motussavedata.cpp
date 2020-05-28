@@ -27,7 +27,7 @@ void MotusSaveData::on_saveDataButton_clicked()
 void MotusSaveData::on_datasaveCheckBox_clicked(bool checked)
 {
     bool isSave[6]={false,false,false,false,false,false};
-    if(checked)
+if(checked)
     {
         isSave[0]=ui->zongqingCheckBox->isChecked();
         isSave[1]=ui->hengyaoCheckBox->isChecked();

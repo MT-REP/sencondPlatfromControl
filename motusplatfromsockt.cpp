@@ -15,8 +15,8 @@ MotusPlatfromSockt::MotusPlatfromSockt(QObject *parent) : QObject(parent)
 //平台参数初始化
 void MotusPlatfromSockt::initPara()
 {
-    mMotusSocket.initSocket(10000);
-    mMotusSocket.setRemoteIpAndPort("192.168.0.125",5000);
+    mMotusSocket.initSocket(10000);//创建本地端口，端口绑定，
+    mMotusSocket.setRemoteIpAndPort("192.168.0.125",5000);//接受网络需要知道对方的IP，端口
     connect(&mMotusSocket,SIGNAL(sendRecvData(char*,int)),this,SLOT(recvData(char *,int)));
 }
 

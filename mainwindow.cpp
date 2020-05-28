@@ -14,13 +14,17 @@ MainWindow::MainWindow(QWidget *parent) :
     Cmd=0;
     sonCmd=0;
     //平台未连接
-    platStatus=88;
+
+
+    platStatus=88;//平台初始化状态
     //定时器初始化
-    mMotusTimer=new MotusTimer(10);
+    mMotusTimer=new MotusTimer(10);//创建定时器
     //槽函数绑定
-    connect(mMotusTimer,SIGNAL(timeout()),this,SLOT(masterClock()));
+    connect(mMotusTimer,SIGNAL(timeout()),this,SLOT(masterClock()));//定时器启动
     //平台Socket初始化
-    mMotusPlatfromSockt.initPara();
+    mMotusPlatfromSockt.initPara();//设置下位机ip,接受下位机数据udp通讯
+
+
     //文件运动对象
     mMotusFileRun=new MotusFileRun(this);
     //正弦运动对象
@@ -35,43 +39,45 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->functionTabWidget->removeTab(0);
     ui->functionTabWidget->removeTab(0);
 
-    ui->functionTabWidget->insertTab(0,mMotusSine,"正弦单步运动");
-    connect(mMotusSine,SIGNAL(sendSinData(float *,float *,float *,float *, float *)),this,SLOT(recvSinData(float *,float *,float *,float *, float *)));
-    connect(mMotusSine,SIGNAL(sendSingleStepData(float *,float *)),this,SLOT(recvSingleStepData(float *,float *)));
-    connect(mMotusSine,SIGNAL(sendSinStop()),this,SLOT(recvSinStop()));
+
+    ui->functionTabWidget->insertTab(0,mMotusSine,"正弦单步运动");//数字为排列顺序，程序顺序为显示顺序
+    connect(mMotusSine,SIGNAL(sendSinData(float *,float *,float *,float *, float *)),this,SLOT(recvSinData(float *,float *,float *,float *, float *)));//点击正弦开始发送此消息，将单步位置，速度，正弦幅值，频率，相位，转换给正弦函数处理，赋值给udp的数据包，由udp发送
+    connect(mMotusSine,SIGNAL(sendSingleStepData(float *,float *)),this,SLOT(recvSingleStepData(float *,float *)));//点击执行发送单步位置，速度给单步处理程序，赋值给udp数据包
+    connect(mMotusSine,SIGNAL(sendSinStop()),this,SLOT(recvSinStop()));//点击缓冲停止，发送子指令sonCmd=3停止
 
     ui->functionTabWidget->insertTab(1,mMotusFileRun,"文件运动");
-    connect(mMotusFileRun,SIGNAL(sendMovieData(QList<M_MovieData>&,float *)),this,SLOT(recvMovieData(QList<M_MovieData>&,float *)));
-    connect(this,SIGNAL(sendMovieCount(unsigned int)),mMotusFileRun,SLOT(recvMovieCount(unsigned int)));
-    connect(this,SIGNAL(setFileRunButton(bool)),mMotusFileRun,SLOT(recvFileRunButton(bool)));
+    connect(mMotusFileRun,SIGNAL(sendMovieData(QList<M_MovieData>&,float *)),this,SLOT(recvMovieData(QList<M_MovieData>&,float *)));//点击文件运动，执行文件处理
+    connect(this,SIGNAL(sendMovieCount(unsigned int)),mMotusFileRun,SLOT(recvMovieCount(unsigned int)));//将文件运动执行进度发送给数据条显示
+    connect(this,SIGNAL(setFileRunButton(bool)),mMotusFileRun,SLOT(recvFileRunButton(bool)));//发送信号显示或隐藏选择文件，文件运动按钮。
+
 
     ui->functionTabWidget->insertTab(2,mMotusSaveData,"数据保存");
-    connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));
-    connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));
-    connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));
+    connect(mMotusSaveData,SIGNAL(sendDataIsSave(bool *,bool )),this,SLOT(recvDataIsSave(bool *,bool )));//点击数据保存复选框，将把需要保存的数据发送给保存数据的结构体
+    connect(mMotusSaveData,SIGNAL(sendCarryOut()),this,SLOT(recvCarryOut()));//点击保存，将把需要保存的数据发送给保存数据的结构体
+    connect(this,SIGNAL(sendDataCarryOut(MDataSave &)),mMotusSaveData,SLOT(recvDataCarryOut(MDataSave &)));//点击保存按钮将数据进行保存txt格式
 
     ui->functionTabWidget->insertTab(3,mMotusCylinder,"单缸运动");
-    connect(mMotusCylinder,SIGNAL(sendHandCmd(int)),this,SLOT(recvHandCmd(int)));
-    connect(mMotusCylinder,SIGNAL(sendHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));
-    connect(mMotusCylinder,SIGNAL(sendHandValue(float)),this,SLOT(recvHandValue(float)));
+    connect(mMotusCylinder,SIGNAL(sendHandCmd(int)),this,SLOT(recvHandCmd(int)));//点击手动，发送5命令（单杠手动），命令给cmd
+    connect(mMotusCylinder,SIGNAL(sendHandMerve(unsigned char )),this,SLOT(recvHandMerve(unsigned char )));//点击确认按钮，复选框缸号赋值给udp的结构体
+    connect(mMotusCylinder,SIGNAL(sendHandValue(float)),this,SLOT(recvHandValue(float)));//按加减号按钮数值加减，赋值给udp结构体
 
     ui->functionTabWidget->insertTab(4,mMotusInsideCmd,"辅助功能");
-    connect(mMotusInsideCmd,SIGNAL(sendNetDataView(bool)),this,SLOT(recvNetDataView(bool)));
-    connect(this,SIGNAL(sendNetData(MotusDataToHost&)),mMotusInsideCmd,SIGNAL(sendNetData(MotusDataToHost&)));
+    connect(mMotusInsideCmd,SIGNAL(sendNetDataView(bool)),this,SLOT(recvNetDataView(bool)));//点击网络打印
+    connect(this,SIGNAL(sendNetData(MotusDataToHost&)),mMotusInsideCmd,SIGNAL(sendNetData(MotusDataToHost&)));//如果打印完成，时钟运行时发送信号，再发送信号，耗时
 
-    mMotusAngleQwtplot.initPara(ui->angleQwtPlot);
+    mMotusAngleQwtplot.initPara(ui->angleQwtPlot);//主界面显示，颜色大小
     mMotusAngleQwtplot.setXMinMAX(-35,35,10);
     QString name[6]={"理论纵倾","理论横摇","理论航向","实际纵倾","实际横摇","实际航向"};
     QColor color[6]={QColor(255,0,0),QColor(255,128,0),QColor(128,255,0),QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
     mMotusAngleQwtplot.setCurve(name,color);
 
-    mMotusPlaceQwtplot.initPara(ui->displacementQwtPlot);
+    mMotusPlaceQwtplot.initPara(ui->displacementQwtPlot);//主界面显示，颜色大小
     mMotusPlaceQwtplot.setXMinMAX(-650,650,100);
     QString placename[6]={"理论横移","理论前冲","理论升降","实际横移","实际前冲","实际升降"};
     QColor placecolor[6]={QColor(255,0,0),QColor(255,128,0),QColor(128,255,0),QColor(0,255,0),QColor(128,0,255),QColor(0,255,255)};
     mMotusPlaceQwtplot.setCurve(placename,placecolor);
 
-#ifdef MotusRelase
+#ifdef MotusRelase//初始化界面按钮不可操作
     ui->searchBottomButton->setEnabled(false);  keyEnable[0]=false;
     ui->riseButton->setEnabled(false);          keyEnable[1]=false;
     ui->runButton->setEnabled(false);           keyEnable[2]=false;
@@ -84,36 +90,36 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    mMotusTimer->stop();
+    mMotusTimer->stop();//关闭定时器
 }
 
 //主时钟
 void MainWindow::masterClock(void)
 {
-    //得到接收数据
+    //取出接收到的数据
     mMotusPlatfromSockt.getRecvHostData(recvStrcut);
     if(netDataView)
     {
         emit sendNetData(recvStrcut);
     }
     //得到平台状态
-    platStatus=mMotusPlatfromSockt.getStatus();
-    sendStruct.Cmd=Cmd;
-    sendStruct.SubCmd=sonCmd;
-    switch(function)
+    platStatus=mMotusPlatfromSockt.getStatus();//取得平台运动状态
+    sendStruct.Cmd=Cmd;//赋值发送命令cmd指令
+    sendStruct.SubCmd=sonCmd;//赋值子命令发送0未连接，1单步运动，2正弦运动，3缓冲停止
+    switch(function)//功能，0，1文件，2单步，3正弦
     {
-        case MovieFuntion: {fileRunFunction();break;}
-        case SingleStepFunction: {singleStepFunction();break;}
-        case SinFunction: {sinFunction();break;}
+        case MovieFuntion: {fileRunFunction();break;}//文件运动
+        case SingleStepFunction: {singleStepFunction();break;}//单步运动
+        case SinFunction: {sinFunction();break;}//正弦运动
     default: break;
     }
-    statusView(); //状态显示
-    interfaceView();
-    if(sendStruct.Cmd==S_CMD_Back2MID||sendStruct.Cmd==S_CMD_Work||sendStruct.Cmd==S_CMD_Stop)
+    statusView(); //状态显示，包括信号灯，发送指令，个数，返回状态，个数
+    interfaceView();//其他界面状态，
+    if(sendStruct.Cmd==S_CMD_Back2MID||sendStruct.Cmd==S_CMD_Work||sendStruct.Cmd==S_CMD_Stop)//如果2（）6（）7（）
     {
         for(int i=0;i<6;i++)
         {
-            sendStruct.DOFs[i]=0.f;
+            sendStruct.DOFs[i]=0.f;//清空运行姿态
         }
     }
     //数据保存
@@ -130,7 +136,7 @@ void MainWindow::masterClock(void)
         }
         mMDataSave.dataList.push_back(tMDataArr);
     }
-    mMotusPlatfromSockt.sendHostData(sendStruct);
+    mMotusPlatfromSockt.sendHostData(sendStruct);//将结构数据发送给下位机
 }
 
 //文件运动
@@ -186,20 +192,20 @@ void MainWindow::sinFunction()
 //平台状态显示
 void MainWindow::statusView()
 {
-    //判断平台是否连接 平台连接亮绿色 否则亮绿色
+    //判断平台是否连接 平台连接亮绿色 否则亮墨绿色
     if(mMotusPlatfromSockt.getConnect())
     {
         ui->platConnButton->setStyleSheet("border:5px groove gray;border-radius:15px;background-color: rgb(0, 255, 0);");
     }
     else
     {
-        platStatus=R_STATUS_Disconnect;
+        platStatus=R_STATUS_Disconnect;//将平台返回的状态给88
         ui->platConnButton->setStyleSheet("border:5px groove gray;border-radius:15px;background-color: rgb(85, 85, 0);");
     }
     //发送指令
-    ui->sendCmdEdit->setText(QString("%1").arg(Cmd));
+    ui->sendCmdEdit->setText(QString("%1").arg(Cmd));//显示发送的命令
     //平台状态判断
-    switch(platStatus)
+    switch(platStatus)//判断平台返回指令
     {
        case R_STATUS_Initting:     {ui->recvStatusEdit->setText("寻底初始化中-0");break;}
        case R_STATUS_Inited:       {ui->recvStatusEdit->setText("寻底初始化完成-1");break;}
@@ -223,9 +229,9 @@ void MainWindow::statusView()
        case R_STATUS_Disconnect:   {ui->recvStatusEdit->setText("未连接设备-88");break;}
     }
     //发送个数
-    ui->sendCountEdit->setText(QString("%1").arg(mMotusPlatfromSockt.getSendCount()));
+    ui->sendCountEdit->setText(QString("%1").arg(mMotusPlatfromSockt.getSendCount()));//显示发送数据个数
     //接收个数
-    ui->recvCountEdit->setText(QString("%1").arg(mMotusPlatfromSockt.getRecvCount()));
+    ui->recvCountEdit->setText(QString("%1").arg(mMotusPlatfromSockt.getRecvCount()));//显示接受数据个数
 
 }
 
@@ -234,30 +240,30 @@ void MainWindow::interfaceView()
 {
     static int totalcount=0;
     totalcount++;
-    if(totalcount%50==0)
+    if(totalcount%50==0)//界面0.5秒刷新一次
     {
         #ifdef  MotusRelase
         //手动功能
-        if(platStatus == R_STATUS_JOG)
+        if(platStatus == R_STATUS_JOG)//如果平台返回状态为32手动模式
         {
-            ui->functionTabWidget->setTabEnabled(0,false);
-            ui->functionTabWidget->setTabEnabled(1,false);
-            ui->functionTabWidget->setTabEnabled(2,false);
+            ui->functionTabWidget->setTabEnabled(0,false);//正弦
+            ui->functionTabWidget->setTabEnabled(1,false);//文件
+            ui->functionTabWidget->setTabEnabled(2,false);//数据保存窗口不可用
         }
         //手动界面禁用
-        if(platStatus != R_STATUS_JOG && platStatus !=R_STATUS_Idle && platStatus != R_STATUS_Disconnect)
+        if(platStatus != R_STATUS_JOG && platStatus !=R_STATUS_Idle && platStatus != R_STATUS_Disconnect)//不是手动，不是空闲，不是未连接状态时，
         {
-            mMotusCylinder->forbiddenButton();
+            mMotusCylinder->forbiddenButton();//手动，加减按钮不可操作
         }
-        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_Run)
+        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_Run)//不是低位到中位完成，不是回中位运行中完成，不是正常运行中，
         {
-             ui->functionTabWidget->setTabEnabled(1,false);
+             ui->functionTabWidget->setTabEnabled(1,false);//文件窗口不可用
         }
-        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_AUTOMOVE)
+        if(platStatus != R_STATUS_Worked&&platStatus != R_STATUS_Back2Mided&&platStatus!=R_STATUS_AUTOMOVE)//不是底位到中位运行完成，不是回中位运行中完成，不是自动运行
         {
-             ui->functionTabWidget->setTabEnabled(0,false);
+             ui->functionTabWidget->setTabEnabled(0,false);//正弦窗口不可用
         }
-        if(platStatus == R_STATUS_Worked||platStatus == R_STATUS_Back2Mided)
+        if(platStatus == R_STATUS_Worked||platStatus == R_STATUS_Back2Mided)//底位到中位运行完成，或者，回中位运行中完成
         {
             clearSinData();
             clearMovieData();
